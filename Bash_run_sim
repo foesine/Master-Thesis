@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --job-name=simulation        # Name of the job
+#SBATCH --ntasks=1                   # Number of tasks (typically 1 for R scripts)
+#SBATCH --time=2-00:00:00            # Maximum runtime (format:D-HH:MM:SS), max 2 days
+#SBATCH --mem=32G                    # Memory per node
+#SBATCH --partition=medium           # Partition use default
+#SBATCH -o /user/emma.foessing01/u11969/logs/run_%J.out
+#SBATCH -e /user/emma.foessing01/u11969/logs/run_%J.error
+
+# Load R module if needed
+module load R
+
+# Execute R script
+Rscript simulation.R

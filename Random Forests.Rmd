@@ -1,0 +1,262 @@
+---
+title: An R Markdown document converted from "/Users/emmafoessing/Documents/Master/MA/Code/Master-Thesis/Random
+  Forests.ipynb"
+output: html_document
+---
+
+# Random Forests
+
+Link: https://medium.com/@gideonadele/using-random-forests-to-generate-partially-synthetic-categorical-data-4d2b6a664988
+Source: J. Reiter and G. Caiola (2010) Random Forests for Generating Partially Synthetic, Categorical Data. Transactions on data privacy. <br>
+randomForest documentation: https://cran.r-project.org/web/packages/randomForest/randomForest.pdf
+
+Bayesian Bootstap:
+https://www.r-bloggers.com/2015/07/easy-bayesian-bootstrap-in-r/
+https://www.sumsar.net/blog/2015/07/easy-bayesian-bootstrap-in-r/
+https://matteocourthoud.github.io/post/bayes_boot/
+
+```{r}
+list_of_packages <- c ("synthpop", "insight", "party", "haven", "dplyr", "rpart", "rpart.plot", "randomForest", "pROC", "caret", "pracma", "here", "Hmisc", "purrr", "randomForest", "caret")
+
+lapply(list_of_packages, FUN= function(X){
+  do.call("require", list(X))
+})
+```
+
+## Data
+
+```{r}
+load(file = (paste0(here(), "/cpspop.RData")))
+adult <- read.csv(file = (paste0(here(),"/adult_preprocessed.csv")))
+# delete NAs
+adult[adult == "?"] <- NA
+adult <- na.omit(adult)
+
+adult$workclass <- as.factor(adult$workclass)
+adult$education <- as.factor(adult$education)
+adult$marital_status <- as.factor(adult$marital_status)
+adult$relationship <- as.factor(adult$relationship)
+adult$race <- as.factor(adult$race)
+adult$sex <- as.factor(adult$sex)
+adult$native_country <- as.factor(adult$native_country)
+adult$income <- as.factor(adult$income)
+```
+
+## Synthetic data
+
+```{r}
+# Function to generate synthetic data for a single variable using Random Forests
+generate_synthetic_data <- function(data, target_var, num_trees = 500) {
+  predictors <- data %>% select(-all_of(target_var))
+  target <- data[[target_var]]
+  
+  rf_model <- randomForest(predictors, as.factor(target), ntree = num_trees)
+  
+  synthetic_values <- sapply(1:nrow(data), function(i) {
+    terminal_nodes <- predict(rf_model, newdata = predictors[i, ], nodes = TRUE)
+    sampled_values <- table(target[terminal_nodes])
+    sampled_values <- sampled_values / sum(sampled_values)
+    sample(names(sampled_values), 1, prob = sampled_values)
+  })
+  
+  synthetic_data <- data
+  synthetic_data[[target_var]] <- synthetic_values
+  return(synthetic_data)
+}
+
+# Function to generate synthetic data for all variables
+generate_synthetic_data_all <- function(data, target_vars, num_trees = 500) {
+  synthetic_data <- data
+  for (target_var in target_vars) {
+    synthetic_data <- generate_synthetic_data(synthetic_data, target_var, num_trees)
+  }
+  return(synthetic_data)
+}
+```
+
+```{r}
+target_vars <- c("tax", "income", "csp", "age", "educ", "marital", "race", "sex", "ss")
+synthetic_cpspop <- generate_synthetic_data_all(cpspop, target_vars, num_trees = 500)
+
+# View the synthetic dataset
+head(synthetic_cpspop)
+```
+
+## Reasons for long time computing syn data
+Complexity of the Random Forest Model: Random Forest is an ensemble method that builds multiple decision trees (specified by the ntree parameter) for each variable in the dataset. Each tree is built on a bootstrap sample of the data, and at each node in these trees, a subset of the predictors is randomly chosen to split on. This process is computationally expensive, especially with larger datasets and a higher number of trees.
+
+Multiple Models: For each variable in the dataset, a separate Random Forest model is trained using all other variables as predictors. This means if you have a dataset with many variables, you will need to train a significant number of Random Forest models. If your dataset has, say, 30 variables, and you decide to use 100 trees per model, you are essentially building 3,000 trees.
+
+Data Size and Dimensionality: The size (number of rows) and the number of variables (columns) in your dataset greatly impact the computation time. Larger datasets or those with many features require more time to build each tree and, consequently, each model.
+
+Handling Factor Variables: If the target variable is a factor (categorical), the model not only has to calculate the probabilities for each category for each case but also needs to handle these during the prediction phase, which can add overhead, especially when sampling from these predicted probabilities to generate synthetic data.
+
+## Adversarial random forest
+
+## Simulation
+
+### Helper functions
+
+```{r}
+# Bayesian bootstrap function
+bayes_boot <- function(data, statistic, n1 = 1000, n2 = 1000, use_weights = FALSE, weight_arg = NULL, ...) {
+  dirichlet_weights <- matrix(rexp(NROW(data) * n1, 1), ncol = NROW(data), byrow = TRUE)
+  dirichlet_weights <- dirichlet_weights / rowSums(dirichlet_weights)
+
+  if (use_weights) {
+    stat_call <- quote(statistic(data, w, ...))
+    names(stat_call)[3] <- weight_arg
+    boot_sample <- apply(dirichlet_weights, 1, function(w) {
+      eval(stat_call)
+    })
+  } else {
+    boot_sample <- apply(dirichlet_weights, 1, function(w) {
+      index_sample <- sample(nrow(data), size = n2, replace = TRUE, prob = w)
+      statistic(data[index_sample, , drop = FALSE], ...)
+    })
+  }
+  if (is.null(dim(boot_sample)) || length(dim(boot_sample)) < 2) {
+    boot_sample
+  } else {
+    as.data.frame(t(boot_sample))
+  }
+}
+```
+
+```{r}
+evaluation_metrics_cont <- function(predictions, test_set){
+  MAE <- mean(abs(predictions - test_set$income))
+  MSE <- mean((predictions - test_set$income)^2)
+  RMSE <- sqrt(MSE)
+
+  SS_res <- sum((test_set$income - predictions)^2)
+  SS_tot <- sum((test_set$income - mean(test_set$income))^2)
+  R_squared <- 1 - (SS_res / SS_tot)
+
+  MAPE <- mean(abs((test_set$income - predictions) / test_set$income)) * 100
+
+  # Create the dataframe
+  metrics_df <- data.frame(
+        MAE = MAE, 
+        MSE = MSE, 
+        RMSE = RMSE,
+        R_squared = R_squared, 
+        MAPE = MAPE)
+
+  return(metrics_df)
+}
+```
+
+```{r}
+## Calculate evaluation metrics for factored targets
+evaluation_metrics_factor <- function(predictions, test_set){
+    # confusion matrix for the prediction on original data
+    cm <- confusionMatrix(predictions, test_set$income,
+                mode = "everything")
+
+    # saving evaluation metrics
+    accuracy <- cm$overall['Accuracy']
+    f1 <- cm$byClass['F1']
+    sens <- cm$byClass['Sensitivity']
+    spec <- cm$byClass['Specificity']
+
+    # Create the dataframe
+    metrics_df <- data.frame(
+        Accuracy = accuracy, 
+        F1 = f1, 
+        Sensitivity = sens, 
+        Specificity = spec
+    )
+    
+    return(metrics_df)
+}
+```
+
+```{r}
+rf_simulation <- function(data, nrun = 10, kfold = 10, steps_mtry = 5, steps_ntree = 5) {
+
+    # create empty list to store evaluation dataframes
+    eval_list <- list()
+
+    # set inital seed
+    s <- 1234
+    for (i in 1:nrun){
+        # vary seed with each run
+        s <- s + 1
+        set.seed(s)
+
+        # generate synthetic data
+        gen_data <- arf_syn(data)
+        
+        # Split the data into training and testing sets
+        trainIndex <- createDataPartition(data$income, p = .8, 
+                                            list = FALSE, 
+                                            times = 1)
+        trainData <- data[ trainIndex,]
+        testData  <- data[-trainIndex,]
+        
+        # define control for CV
+        control <- trainControl(method = "cv", number = kfold)
+
+        # Define the parameter grid for tuning
+        tunegrid <- expand.grid(mtry = seq(2, ncol(trainData) - 1, length.out = steps_mtry))
+        ntree_values <- seq(100, 1000, length.out = steps_ntree)
+
+        # Fit the random forest model
+        rf_model <- randomForest(income ~ ., data = trainData)
+
+        results <- list()
+        for (ntree in ntree_values) {
+            set.seed(123)
+            rf_model <- train(income ~ ., data = trainData, 
+                                method = "rf", 
+                                trControl = control, 
+                                tuneGrid = tunegrid, 
+                                ntree = ntree)
+            results[[paste0("ntree_", ntree)]] <- rf_model
+            }
+        best_model <- results[[which.max(sapply(results, function(x) max(x$results$Accuracy)))]]
+
+        # Make predictions on the test set
+        predictions <- predict(best_model, newdata = testData)
+
+        # Evaluate the model performance
+        # evaluation metrics
+        if (is.numeric(data$income)) {
+            eval <- as.data.frame(evaluation_metrics_cont(predictions, testData))
+            }
+        else if (is.factor(data$income)) {
+            eval <- as.data.frame(evaluation_metrics_factor(predictions, testData))
+            }
+        else {
+            break("The predicted target has to be numeric or factor.")
+            }
+
+        eval_list[[i]] <- eval
+        print(c("run", i, "completed"))
+        }
+
+    # outside the nruns loop
+    # average over all runs
+    sum_df <- Reduce(function(x, y) Map(`+`, x, y), eval_list)
+    eval_avg <- lapply(sum_df, function(col) col / length(eval_list))
+
+    # Convert the list back to a dataframe
+    # Store row names
+    rownames <- row.names(eval_list[[1]])
+
+    # Convert the list back to a dataframe
+    eval_avg <- as.data.frame(eval_avg)
+
+    # Set back the row names
+    rownames(eval_avg) <- row.names(eval_list[[1]])
+
+    # Return the average evaluation metrics
+    return(eval_avg)
+    }
+```
+
+```{r}
+cps_res <- rf_simulation(cpspop)
+```
+
