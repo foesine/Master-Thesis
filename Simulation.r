@@ -1,7 +1,10 @@
 
 ####################
+
+.libPaths("/user/emma.foessing01/u11969/R_libs")
+
 # Libraries
-list_of_packages <- c ("synthpop", "insight", "party", "dplyr", "rpart", "rpart.plot", "randomForest", "pROC", "caret", "pracma", "here", "Hmisc")
+list_of_packages <- c ("synthpop", "insight", "party", "dplyr", "rpart", "rpart.plot", "randomForest", "pROC", "caret", "pracma", "here", "Hmisc", "jsonlite")
 
 # Function to check and install packages
 install_if_missing <- function(p) {
