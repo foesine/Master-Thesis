@@ -1,0 +1,733 @@
+Warning: dependencies ‘graph’, ‘Rgraphviz’ are not available
+also installing the dependencies ‘RWekajars’, ‘xml2’, ‘gRbase’, ‘gRain’, ‘Rmpfr’, ‘gmp’, ‘rJava’, ‘RWeka’, ‘vdiffr’, ‘DiagrammeR’, ‘lintr’
+
+trying URL 'http://cran.us.r-project.org/src/contrib/RWekajars_3.9.3-2.tar.gz'
+Content type 'application/x-gzip' length 10030557 bytes (9.6 MB)
+==================================================
+downloaded 9.6 MB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/xml2_1.3.6.tar.gz'
+Content type 'application/x-gzip' length 294715 bytes (287 KB)
+==================================================
+downloaded 287 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/gRbase_2.0.2.tar.gz'
+Content type 'application/x-gzip' length 4329145 bytes (4.1 MB)
+==================================================
+downloaded 4.1 MB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/gRain_1.4.1.tar.gz'
+Content type 'application/x-gzip' length 237944 bytes (232 KB)
+==================================================
+downloaded 232 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/Rmpfr_0.9-5.tar.gz'
+Content type 'application/x-gzip' length 608053 bytes (593 KB)
+==================================================
+downloaded 593 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/gmp_0.7-4.tar.gz'
+Content type 'application/x-gzip' length 167439 bytes (163 KB)
+==================================================
+downloaded 163 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/rJava_1.0-11.tar.gz'
+Content type 'application/x-gzip' length 634103 bytes (619 KB)
+==================================================
+downloaded 619 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/RWeka_0.4-46.tar.gz'
+Content type 'application/x-gzip' length 315760 bytes (308 KB)
+==================================================
+downloaded 308 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/vdiffr_1.0.7.tar.gz'
+Content type 'application/x-gzip' length 102357 bytes (99 KB)
+==================================================
+downloaded 99 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/DiagrammeR_1.0.11.tar.gz'
+Content type 'application/x-gzip' length 1238722 bytes (1.2 MB)
+==================================================
+downloaded 1.2 MB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/lintr_3.1.2.tar.gz'
+Content type 'application/x-gzip' length 2503379 bytes (2.4 MB)
+==================================================
+downloaded 2.4 MB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/bnlearn_4.9.4.tar.gz'
+Content type 'application/x-gzip' length 1321322 bytes (1.3 MB)
+==================================================
+downloaded 1.3 MB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/arulesCBA_1.2.7.tar.gz'
+Content type 'application/x-gzip' length 349038 bytes (340 KB)
+==================================================
+downloaded 340 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/network_1.18.2.tar.gz'
+Content type 'application/x-gzip' length 506061 bytes (494 KB)
+==================================================
+downloaded 494 KB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/igraph_2.0.3.tar.gz'
+Content type 'application/x-gzip' length 4967875 bytes (4.7 MB)
+==================================================
+downloaded 4.7 MB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/xgboost_1.7.8.1.tar.gz'
+Content type 'application/x-gzip' length 1086388 bytes (1.0 MB)
+==================================================
+downloaded 1.0 MB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/data.table_1.15.4.tar.gz'
+Content type 'application/x-gzip' length 5387593 bytes (5.1 MB)
+==================================================
+downloaded 5.1 MB
+
+trying URL 'http://cran.us.r-project.org/src/contrib/RSNNS_0.4-17.tar.gz'
+Content type 'application/x-gzip' length 976329 bytes (953 KB)
+==================================================
+downloaded 953 KB
+
+* installing *source* package ‘xml2’ ...
+** package ‘xml2’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Spack GCC) 11.4.0’
+using C++ compiler: ‘g++ (Spack GCC) 11.4.0’
+installing to /home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-xml2/00new/xml2/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+Error : read_xml.Rd:58: unable to load shared object '/home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-xml2/00new/xml2/libs/xml2.so':
+  libicui18n.so.73: cannot open shared object file: No such file or directory
+ERROR: installing Rd objects failed for package ‘xml2’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/xml2’
+* installing *source* package ‘gmp’ ...
+** package ‘gmp’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C++ compiler: ‘g++ (Spack GCC) 11.4.0’
+installing to /home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-gmp/00new/gmp/libs
+** R
+** data
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (gmp)
+* installing *source* package ‘rJava’ ...
+** package ‘rJava’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Spack GCC) 11.4.0’
+warning: [options] bootstrap class path not set in conjunction with -source 8
+Note: ../REXP.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+1 warning
+./org/rosuda/JRI/Rengine.class: major version 52 is newer than 51, the highest major version supported by this compiler.
+  It is recommended that the compiler be upgraded.
+./org/rosuda/JRI/RMainLoopCallbacks.class: major version 52 is newer than 51, the highest major version supported by this compiler.
+  It is recommended that the compiler be upgraded.
+./org/rosuda/JRI/REXP.class: major version 52 is newer than 51, the highest major version supported by this compiler.
+  It is recommended that the compiler be upgraded.
+/usr/bin/ld: cannot find -liconv
+collect2: error: ld returned 1 exit status
+make[2]: *** [libjri.so] Error 1
+make[1]: *** [src/JRI.jar] Error 2
+make: *** [jri] Error 2
+ERROR: compilation failed for package ‘rJava’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/rJava’
+* installing *source* package ‘bnlearn’ ...
+** package ‘bnlearn’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Spack GCC) 11.4.0’
+installing to /home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-bnlearn/00new/bnlearn/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (bnlearn)
+* installing *source* package ‘arulesCBA’ ...
+** package ‘arulesCBA’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Spack GCC) 11.4.0’
+installing to /home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-arulesCBA/00new/arulesCBA/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (arulesCBA)
+* installing *source* package ‘network’ ...
+** package ‘network’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Spack GCC) 11.4.0’
+installing to /home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-network/00new/network/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (network)
+* installing *source* package ‘igraph’ ...
+** package ‘igraph’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Spack GCC) 11.4.0’
+using C++ compiler: ‘g++ (Spack GCC) 11.4.0’
+In file included from vendor/cigraph/src/constructors/famous.c:27:
+vendor/cigraph/src/internal/hacks.h:41: warning: "strdup" redefined
+   41 |     #define strdup igraph_i_strdup
+      | 
+In file included from /usr/include/string.h:633,
+                 from vendor/cigraph/src/constructors/famous.c:23:
+/usr/include/bits/string2.h:1314: note: this is the location of the previous definition
+ 1314 | #   define strdup(s) __strdup (s)
+      | 
+In file included from vendor/cigraph/src/constructors/famous.c:27:
+vendor/cigraph/src/internal/hacks.h:46: warning: "strndup" redefined
+   46 |     #define strndup igraph_i_strndup
+      | 
+In file included from /usr/include/string.h:633,
+                 from vendor/cigraph/src/constructors/famous.c:23:
+/usr/include/bits/string2.h:1342: note: this is the location of the previous definition
+ 1342 | #   define strndup(s, n) __strndup (s, n)
+      | 
+In file included from src/vendor/cigraph/src/io/gml-parser.y:53:
+vendor/cigraph/src/internal/hacks.h:41: warning: "strdup" redefined
+   41 |     #define strdup igraph_i_strdup
+      | 
+In file included from /usr/include/string.h:633,
+                 from src/vendor/io/parsers/gml-lexer.h:259,
+                 from src/vendor/cigraph/src/io/gml-parser.y:51:
+/usr/include/bits/string2.h:1314: note: this is the location of the previous definition
+ 1314 | #   define strdup(s) __strdup (s)
+      | 
+In file included from src/vendor/cigraph/src/io/gml-parser.y:53:
+vendor/cigraph/src/internal/hacks.h:46: warning: "strndup" redefined
+   46 |     #define strndup igraph_i_strndup
+      | 
+In file included from /usr/include/string.h:633,
+                 from src/vendor/io/parsers/gml-lexer.h:259,
+                 from src/vendor/cigraph/src/io/gml-parser.y:51:
+/usr/include/bits/string2.h:1342: note: this is the location of the previous definition
+ 1342 | #   define strndup(s, n) __strndup (s, n)
+      | 
+In file included from src/vendor/cigraph/src/io/lgl-parser.y:55:
+vendor/cigraph/src/internal/hacks.h:41: warning: "strdup" redefined
+   41 |     #define strdup igraph_i_strdup
+      | 
+In file included from /usr/include/string.h:633,
+                 from src/vendor/io/parsers/lgl-lexer.h:259,
+                 from src/vendor/cigraph/src/io/lgl-parser.y:53:
+/usr/include/bits/string2.h:1314: note: this is the location of the previous definition
+ 1314 | #   define strdup(s) __strdup (s)
+      | 
+In file included from src/vendor/cigraph/src/io/lgl-parser.y:55:
+vendor/cigraph/src/internal/hacks.h:46: warning: "strndup" redefined
+   46 |     #define strndup igraph_i_strndup
+      | 
+In file included from /usr/include/string.h:633,
+                 from src/vendor/io/parsers/lgl-lexer.h:259,
+                 from src/vendor/cigraph/src/io/lgl-parser.y:53:
+/usr/include/bits/string2.h:1342: note: this is the location of the previous definition
+ 1342 | #   define strndup(s, n) __strndup (s, n)
+      | 
+In file included from src/vendor/cigraph/src/io/ncol-parser.y:55:
+vendor/cigraph/src/internal/hacks.h:41: warning: "strdup" redefined
+   41 |     #define strdup igraph_i_strdup
+      | 
+In file included from /usr/include/string.h:633,
+                 from src/vendor/io/parsers/ncol-lexer.h:259,
+                 from src/vendor/cigraph/src/io/ncol-parser.y:53:
+/usr/include/bits/string2.h:1314: note: this is the location of the previous definition
+ 1314 | #   define strdup(s) __strdup (s)
+      | 
+In file included from src/vendor/cigraph/src/io/ncol-parser.y:55:
+vendor/cigraph/src/internal/hacks.h:46: warning: "strndup" redefined
+   46 |     #define strndup igraph_i_strndup
+      | 
+In file included from /usr/include/string.h:633,
+                 from src/vendor/io/parsers/ncol-lexer.h:259,
+                 from src/vendor/cigraph/src/io/ncol-parser.y:53:
+/usr/include/bits/string2.h:1342: note: this is the location of the previous definition
+ 1342 | #   define strndup(s, n) __strndup (s, n)
+      | 
+In file included from src/vendor/cigraph/src/io/pajek-parser.y:56:
+vendor/cigraph/src/internal/hacks.h:41: warning: "strdup" redefined
+   41 |     #define strdup igraph_i_strdup
+      | 
+In file included from /usr/include/string.h:633,
+                 from src/vendor/io/parsers/pajek-lexer.h:259,
+                 from src/vendor/cigraph/src/io/pajek-parser.y:54:
+/usr/include/bits/string2.h:1314: note: this is the location of the previous definition
+ 1314 | #   define strdup(s) __strdup (s)
+      | 
+In file included from src/vendor/cigraph/src/io/pajek-parser.y:56:
+vendor/cigraph/src/internal/hacks.h:46: warning: "strndup" redefined
+   46 |     #define strndup igraph_i_strndup
+      | 
+In file included from /usr/include/string.h:633,
+                 from src/vendor/io/parsers/pajek-lexer.h:259,
+                 from src/vendor/cigraph/src/io/pajek-parser.y:54:
+/usr/include/bits/string2.h:1342: note: this is the location of the previous definition
+ 1342 | #   define strndup(s, n) __strndup (s, n)
+      | 
+vendor/cigraph/vendor/glpk/misc/wclique1.c: In function '_glp_wclique1':
+vendor/cigraph/vendor/glpk/misc/wclique1.c:111:7: warning: 'memset' specified bound between 18446744071562067968 and 18446744073709551615 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
+  111 |       memset(&skip[1], 0, sizeof(char) * n);
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vendor/cigraph/vendor/glpk/misc/wclique1.c:113:7: warning: 'memset' specified bound between 18446744071562067968 and 18446744073709551615 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
+  113 |       memset(&d_flag[1], 0, sizeof(char) * n);
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+installing to /home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-igraph/00new/igraph/libs
+** R
+** demo
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+ERROR: loading failed
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/igraph’
+* installing *source* package ‘data.table’ ...
+** package ‘data.table’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Spack GCC) 11.4.0’
+installing to /home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-data.table/00new/data.table/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (data.table)
+* installing *source* package ‘RSNNS’ ...
+** package ‘RSNNS’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘gcc (Spack GCC) 11.4.0’
+using C++ compiler: ‘g++ (Spack GCC) 11.4.0’
+installing to /home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-RSNNS/00new/RSNNS/libs
+** R
+** data
+** demo
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (RSNNS)
+ERROR: dependency ‘rJava’ is not available for package ‘RWekajars’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/RWekajars’
+ERROR: dependency ‘igraph’ is not available for package ‘gRbase’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/gRbase’
+* installing *source* package ‘Rmpfr’ ...
+** package ‘Rmpfr’ successfully unpacked and MD5 sums checked
+** using staged installation
+configure: error: Header file mpfr.h not found; maybe use --with-mpfr-include=INCLUDE_PATH
+ERROR: configuration failed for package ‘Rmpfr’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/Rmpfr’
+ERROR: dependency ‘xml2’ is not available for package ‘vdiffr’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/vdiffr’
+ERROR: dependency ‘igraph’ is not available for package ‘DiagrammeR’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/DiagrammeR’
+ERROR: dependency ‘xml2’ is not available for package ‘lintr’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/lintr’
+ERROR: failed to lock directory ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs’ for modifying
+Try removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/00LOCK-xgboost’
+ERROR: dependencies ‘gRbase’, ‘igraph’ are not available for package ‘gRain’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/gRain’
+ERROR: dependencies ‘RWekajars’, ‘rJava’ are not available for package ‘RWeka’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/RWeka’
+
+The downloaded source packages are in
+	‘/local/u11969_959052/RtmpEF9kd3/downloaded_packages’
+There were 12 warnings (use warnings() to see them)
+[NbConvertApp] Converting notebook /user/emma.foessing01/u11969/Master-Thesis/Simulation.ipynb to notebook
+trying URL 'https://cloud.r-project.org/src/contrib/synthpop_1.8-0.tar.gz'
+Content type 'application/x-gzip' length 1340045 bytes (1.3 MB)
+==================================================
+downloaded 1.3 MB
+
+* installing *source* package ‘synthpop’ ...
+** package ‘synthpop’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (synthpop)
+
+The downloaded source packages are in
+	‘/local/u11969_959052/RtmphFC8kB/downloaded_packages’
+trying URL 'https://cran.r-project.org/src/contrib/jsonlite_1.8.8.tar.gz'
+Content type 'application/x-gzip' length 1053028 bytes (1.0 MB)
+==================================================
+downloaded 1.0 MB
+
+* installing *source* package ‘jsonlite’ ...
+** package ‘jsonlite’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+/bin/sh: x86_64-conda-linux-gnu-cc: command not found
+make: *** [base64.o] Error 127
+ERROR: compilation failed for package ‘jsonlite’
+* removing ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/jsonlite’
+* restoring previous ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs/jsonlite’
+
+The downloaded source packages are in
+	‘/local/u11969_959052/RtmphFC8kB/downloaded_packages’
+trying URL 'https://cran.r-project.org/src/contrib/codetools_0.2-20.tar.gz'
+Content type 'application/x-gzip' length 38683 bytes (37 KB)
+==================================================
+downloaded 37 KB
+
+* installing *source* package ‘codetools’ ...
+** package ‘codetools’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (codetools)
+
+The downloaded source packages are in
+	‘/local/u11969_959052/RtmphFC8kB/downloaded_packages’
+Traceback (most recent call last):
+  File "/user/emma.foessing01/u11969/miniconda/bin/jupyter-nbconvert", line 11, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/jupyter_core/application.py", line 283, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 412, in start
+    self.convert_notebooks()
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 590, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 556, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 479, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 203, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 222, in from_file
+    return self.from_notebook_node(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/exporters/notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 156, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 354, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)  # type:ignore[operator]
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/preprocessors/base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 102, in preprocess
+    self.preprocess_cell(cell, resources, index)
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 123, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/user/emma.foessing01/u11969/miniconda/lib/python3.12/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+.libPaths("/user/emma.foessing01/u11969/R_libs")
+Sys.setenv("PKG_CXXFLAGS"="-std=c++14")
+
+install.packages("synthpop", dependencies = TRUE, repos = "https://cloud.r-project.org/")
+install.packages("jsonlite")
+install.packages("codetools")
+
+# Load libraries
+list_of_packages <- c(
+  "synthpop", "jsonlite", "codetools", "insight", "party", "haven", "dplyr", "rpart", "rpart.plot",
+  "randomForest", "pROC", "caret", "pracma", "here", "Hmisc", "purrr",
+  "ranger", "bnlearn", "arulesCBA", "network", "igraph", "xgboost",
+  "data.table", "RSNNS"
+)
+# Function to check and install packages
+install_if_missing <- function(p) {
+  if (!requireNamespace(p, quietly = TRUE)) {
+    install.packages(p, dependencies = TRUE)
+  }
+  library(p, character.only = TRUE)
+}
+
+# Install and load all required packages
+lapply(list_of_packages, install_if_missing)
+------------------
+
+----- stderr -----
+Installing package into ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs’
+(as ‘lib’ is unspecified)
+----- stderr -----
+Installing package into ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs’
+(as ‘lib’ is unspecified)
+----- stderr -----
+Warning message in install.packages("jsonlite"):
+“installation of package ‘jsonlite’ had non-zero exit status”
+----- stderr -----
+Installing package into ‘/home/uni08/hpc/emma.foessing01/u11969/R_libs’
+(as ‘lib’ is unspecified)
+----- stderr -----
+Find out more at https://www.synthpop.org.uk/
+----- stderr -----
+Warning message:
+“package ‘jsonlite’ was built under R version 4.4.0”
+----- stderr -----
+Warning message:
+“package ‘insight’ was built under R version 4.4.0”
+----- stderr -----
+Warning message:
+“package ‘party’ was built under R version 4.4.0”
+----- stderr -----
+Loading required package: grid
+----- stderr -----
+Loading required package: mvtnorm
+----- stderr -----
+Warning message:
+“package ‘mvtnorm’ was built under R version 4.4.0”
+----- stderr -----
+Loading required package: modeltools
+----- stderr -----
+Warning message:
+“package ‘modeltools’ was built under R version 4.4.0”
+----- stderr -----
+Loading required package: stats4
+----- stderr -----
+Loading required package: strucchange
+----- stderr -----
+Warning message:
+“package ‘strucchange’ was built under R version 4.4.0”
+----- stderr -----
+Loading required package: zoo
+----- stderr -----
+Warning message:
+“package ‘zoo’ was built under R version 4.4.0”
+----- stderr -----
+
+Attaching package: ‘zoo’
+----- stderr -----
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+----- stderr -----
+Loading required package: sandwich
+----- stderr -----
+Warning message:
+“package ‘sandwich’ was built under R version 4.4.0”
+----- stderr -----
+Warning message:
+“package ‘haven’ was built under R version 4.4.0”
+----- stderr -----
+Warning message:
+“package ‘dplyr’ was built under R version 4.4.0”
+----- stderr -----
+
+Attaching package: ‘dplyr’
+----- stderr -----
+The following object is masked from ‘package:party’:
+
+    where
+----- stderr -----
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+----- stderr -----
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+----- stderr -----
+Warning message:
+“package ‘rpart’ was built under R version 4.4.0”
+----- stderr -----
+Warning message:
+“package ‘rpart.plot’ was built under R version 4.4.0”
+----- stderr -----
+Warning message:
+“package ‘randomForest’ was built under R version 4.4.0”
+----- stderr -----
+randomForest 4.7-1.1
+----- stderr -----
+Type rfNews() to see new features/changes/bug fixes.
+----- stderr -----
+
+Attaching package: ‘randomForest’
+----- stderr -----
+The following object is masked from ‘package:dplyr’:
+
+    combine
+----- stderr -----
+Warning message:
+“package ‘pROC’ was built under R version 4.4.0”
+----- stderr -----
+Type 'citation("pROC")' for a citation.
+----- stderr -----
+
+Attaching package: ‘pROC’
+----- stderr -----
+The following objects are masked from ‘package:stats’:
+
+    cov, smooth, var
+----- stderr -----
+Warning message:
+“package ‘caret’ was built under R version 4.4.0”
+----- stderr -----
+Loading required package: ggplot2
+----- stderr -----
+Warning message:
+“package ‘ggplot2’ was built under R version 4.4.0”
+----- stderr -----
+
+Attaching package: ‘ggplot2’
+----- stderr -----
+The following object is masked from ‘package:randomForest’:
+
+    margin
+----- stderr -----
+Loading required package: lattice
+----- stderr -----
+Warning message:
+“package ‘lattice’ was built under R version 4.4.0”
+----- stderr -----
+Warning message:
+“package ‘pracma’ was built under R version 4.4.0”
+----- stderr -----
+Warning message:
+“package ‘here’ was built under R version 4.4.0”
+----- stderr -----
+here() starts at /home/uni08/hpc/emma.foessing01/u11969/Master-Thesis
+----- stderr -----
+Warning message:
+“package ‘Hmisc’ was built under R version 4.4.0”
+----- stderr -----
+
+Attaching package: ‘Hmisc’
+----- stderr -----
+The following object is masked from ‘package:pracma’:
+
+    ceil
+----- stderr -----
+The following objects are masked from ‘package:dplyr’:
+
+    src, summarize
+----- stderr -----
+The following objects are masked from ‘package:base’:
+
+    format.pval, units
+----- stderr -----
+Warning message:
+“package ‘purrr’ was built under R version 4.4.0”
+----- stderr -----
+
+Attaching package: ‘purrr’
+----- stderr -----
+The following object is masked from ‘package:pracma’:
+
+    cross
+----- stderr -----
+The following object is masked from ‘package:caret’:
+
+    lift
+----- stderr -----
+The following object is masked from ‘package:jsonlite’:
+
+    flatten
+----- stderr -----
+Warning message:
+“package ‘ranger’ was built under R version 4.4.0”
+----- stderr -----
+
+Attaching package: ‘ranger’
+----- stderr -----
+The following object is masked from ‘package:randomForest’:
+
+    importance
+------------------
+
+Error: This is R 4.2.3, package ‘bnlearn’ needs >= 4.3.0
+Traceback:
+
+1. lapply(list_of_packages, install_if_missing)
+2. FUN(X[[i]], ...)
+3. library(p, character.only = TRUE)   # at line 20 of file <text>
+4. testRversion(pkgInfo, package, pkgpath)
+5. stop(gettextf("This is R %s, package %s needs %s %s", current, 
+ .     sQuote(pkgname), dep$op, target), call. = FALSE, domain = NA)
+
