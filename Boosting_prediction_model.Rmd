@@ -1,0 +1,243 @@
+---
+title: An R Markdown document converted from "/Users/emmafoessing/Documents/Master/MA/Code/Master-Thesis/Boosting_prediction_model.ipynb"
+output: html_document
+---
+
+# Boosting prediction function
+
+```{r}
+install.packages("xgboost")
+```
+
+```{r}
+list_of_packages <- c ("synthpop", "insight", "party", "dplyr", "rpart", "rpart.plot", "randomForest", "pROC", "caret", "pracma", "here", "Hmisc", "randomForest", "caret", "xgboost", "data.table")
+
+lapply(list_of_packages, FUN= function(X){
+  do.call("require", list(X))
+})
+```
+
+## Data
+
+```{r}
+# directory
+directory <- "/Users/emmafoessing/Documents/Master/MA/Code/Master-Thesis"
+load(paste0(directory, "/cpspop.RData"))
+adult <- read.csv(paste0(directory, "/adult_preprocessed.csv"))
+```
+
+```{r}
+# delete NAs
+adult[adult == "?"] <- NA
+adult <- na.omit(adult)
+
+adult$workclass <- as.factor(adult$workclass)
+adult$education <- as.factor(adult$education)
+adult$marital_status <- as.factor(adult$marital_status)
+adult$relationship <- as.factor(adult$relationship)
+adult$race <- as.factor(adult$race)
+adult$sex <- as.factor(adult$sex)
+adult$native_country <- as.factor(adult$native_country)
+adult$income <- as.factor(adult$income)
+```
+
+```{r}
+head(adult)
+```
+
+### Helper functions
+
+```{r}
+## eval cont targets
+evaluation_metrics_cont <- function(predictions, test_set){
+  MAE <- mean(abs(predictions - test_set$income))
+  MSE <- mean((predictions - test_set$income)^2)
+  RMSE <- sqrt(MSE)
+
+  SS_res <- sum((test_set$income - predictions)^2)
+  SS_tot <- sum((test_set$income - mean(test_set$income))^2)
+  R_squared <- 1 - (SS_res / SS_tot)
+
+  MAPE <- mean(abs((test_set$income - predictions) / test_set$income)) * 100
+
+  # Create the dataframe
+  metrics_df <- data.frame(
+        MAE = MAE, 
+        MSE = MSE, 
+        RMSE = RMSE,
+        R_squared = R_squared, 
+        MAPE = MAPE)
+
+  return(metrics_df)
+}
+```
+
+```{r}
+## eval factored targets
+evaluation_metrics_factor <- function(predictions, test_set){
+    # confusion matrix for the prediction on original data
+    cm <- confusionMatrix(predictions, test_set$income,
+                mode = "everything")
+
+    # saving evaluation metrics
+    accuracy <- cm$overall['Accuracy']
+    f1 <- cm$byClass['F1']
+    sens <- cm$byClass['Sensitivity']
+    spec <- cm$byClass['Specificity']
+
+    # Create the dataframe
+    metrics_df <- data.frame(
+        Accuracy = accuracy, 
+        F1 = f1, 
+        Sensitivity = sens, 
+        Specificity = spec
+    )
+    
+    return(metrics_df)
+}
+```
+
+```{r}
+convert_to_numeric_matrix <- function(df) {
+  # Convert factors to numeric
+  df[] <- lapply(df, function(col) {
+    if (is.factor(col)) {
+      return(as.numeric(col))
+    } else {
+      return(col)
+    }
+  })
+  
+  # Convert the entire data frame to a matrix
+  matrix_data <- as.matrix(df)
+  return(matrix_data)
+}
+```
+
+```{r}
+xgb_pred <- function(data, outer_folds, inner_folds, nrounds_steps, max_depth_steps, eta_steps, gamma_steps, colsample_bytree_steps, min_child_weight_steps, subsample_steps) { ############adjust##############
+
+    # Adjust evaluation metric to fit both numeric and factored targets
+    summaryFunctionType <- if (is.numeric(data$income)) defaultSummary else multiClassSummary
+    
+    # Set control arguments
+    outer_control <- trainControl(method = "cv", number = outer_folds,
+                                  summaryFunction = summaryFunctionType,
+                                  verboseIter = FALSE,
+                                  allowParallel = TRUE)
+        
+    inner_control <- trainControl(method = "cv", number = inner_folds, 
+                                  summaryFunction = summaryFunctionType,
+                                  verboseIter = FALSE,
+                                  allowParallel = TRUE)
+
+    # Define the parameter grid for tuning
+    tunegrid <- expand.grid(
+        nrounds = seq(50, 150, length.out = nrounds_steps),
+        max_depth = round(seq(3, 9, length.out = max_depth_steps)),
+        eta = seq(0.01, 0.3, length.out = eta_steps),
+        gamma = seq(0, 0.2, length.out = gamma_steps),
+        colsample_bytree = seq(0.5, 1, length.out = colsample_bytree_steps),
+        min_child_weight = seq(1, 10, length.out = min_child_weight_steps),
+        subsample = seq(0.5, 1, length.out = subsample_steps)
+    )
+    # alternatives for smaller grid:
+        #gamma = 0,  # Default value
+        #colsample_bytree = 0.8,  # Default value
+        #min_child_weight = 1,  # Default value
+        #subsample = 0.8  # Default value
+
+
+    # Initialize variables to store results
+    outer_results <- list()
+
+    outer_cv_folds <- createFolds(data$income, k = outer_folds)
+    
+    # Outer loop: Cross-validation for model evaluation
+    for (i in seq_along(outer_cv_folds)) {
+        
+        # Split data into outer folds
+        outer_test_index <- outer_cv_folds[[i]]
+        outer_testData <- data[outer_test_index,]
+        outer_trainData <- data[-outer_test_index,]
+        
+        # Convert data for xgboost
+        train_X <- convert_to_numeric_matrix(outer_trainData[, !colnames(outer_trainData) %in% 'income'])
+        train_y <- outer_trainData$income
+        
+        val_X <- convert_to_numeric_matrix(outer_testData[, !colnames(outer_testData) %in% 'income'])
+        val_y <- outer_testData$income
+        
+        train_dmatrix <- xgb.DMatrix(data = train_X, label = train_y)
+        val_dmatrix <- xgb.DMatrix(data = val_X, label = val_y)
+
+        # Hyperparameter tuning using inner CV
+        model <- caret::train(x = train_X, 
+                              y = train_y,
+                              method = "xgbTree", ############adjust##############
+                              tuneGrid = tunegrid, 
+                              trControl = inner_control,
+                              verbose = FALSE)
+        
+        # Store the best hyperparameters
+        best_hyperparameters <- model$bestTune
+
+        # Train the final model on the outer training set with the best hyperparameters
+        final_model <- caret::train(x = train_X, 
+                                    y = train_y, 
+                                    method = "xgbTree", ############adjust##############
+                                    tuneGrid = best_hyperparameters,
+                                    trControl = outer_control,
+                                    verbose = FALSE)
+
+        # Testing the final model on the outer test set
+        predictions <- predict(model, newdata = val_X, iteration_range = c(1, model$bestTune$nrounds))############adjust##############
+
+        
+        if (is.numeric(data$income)) {
+            eval <- evaluation_metrics_cont(predictions, outer_testData)
+        } else if (is.factor(data$income)) {
+            eval <- evaluation_metrics_factor(predictions, outer_testData)
+        } else {
+            stop("The predicted target has to be numeric or factor.")
+        }
+
+        # Store the evaluation metrics for this outer fold
+        outer_results[[i]] <- eval
+    }
+
+    # Average the evaluation metrics over the outer folds
+    eval_avg_outer_folds <- do.call(rbind, outer_results) %>%
+                            summarise(across(everything(), mean, na.rm = TRUE))
+
+    
+
+    # Return the average evaluation metrics
+    return(eval_avg_outer_folds)
+}
+```
+
+```{r}
+cps_res <- xgb_pred(cpspop, 2, 2, 2, 2, 2, 2, 2, 2, 2)
+```
+
+```{r}
+cps_res <- simulation_xgboost(cpspop)
+```
+
+```{r}
+adult_res <- simulation(adult)
+```
+
+### Save results
+
+```{r}
+# Bind results
+boosting_pred_results <- list(cps_res = cps_res, adult_res = adult_res)
+# File pth for output
+file <- "/user/emma.foessing01/u11969/results/boosting_pred_results.RData" 
+dir.create(dirname(output_file), recursive = TRUE, showWarnings = FALSE) # create dir if not there
+# Save the results to an RData file 
+save(results, file = output_file)
+```
+
