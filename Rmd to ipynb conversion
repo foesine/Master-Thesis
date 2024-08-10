@@ -1,0 +1,16 @@
+# sh: pip install notedown
+# sh: brew install pandoc
+
+library(rmarkdown)
+library(knitr)
+library(xfun)
+
+input <- "/Users/emmafoessing/Documents/Master/MA/Code/Master-Thesis/MLP_prediction_model1.Rmd"
+output <- xfun::with_ext(input, "ipynb")
+
+# Convert Rmd to markdown first
+markdown_file <- tempfile(fileext = ".md")
+rmarkdown::render(input, output_format = "md_document", output_file = markdown_file, clean = FALSE)
+
+# Convert markdown to ipynb using notedown
+system(paste("notedown", markdown_file, "--to notebook --output", output))
