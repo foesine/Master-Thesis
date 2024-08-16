@@ -1,0 +1,166 @@
+---
+title: An R Markdown document converted from "/Users/emmafoessing/Documents/Master/MA/Code/Master-Thesis/SDG_MLP.ipynb"
+output: html_document
+---
+
+# Synthetic Data Generator with a Multi-Layer-Perceptron Model
+
+## Libraries
+
+```{r}
+list_of_packages <- c ("synthpop", "insight", "party", "haven", "dplyr", "rpart", "rpart.plot", "randomForest", "pROC", "caret", "pracma", "here", "Hmisc", "purrr", "randomForest", "caret", "ranger", "xgboost", "data.table", "tensorflow","keras")
+
+install_if_missing <- function(p){
+  if(!requireNamespace(p, quietly = TRUE)){
+    install.packages(p)
+  }
+  library(p, character.only=TRUE)
+}
+
+
+lapply(list_of_packages, install_if_missing)
+```
+
+## Data
+
+```{r}
+load(file = (paste0(here(), "/cpspop.RData")))
+adult <- read.csv(file = (paste0(here(),"/adult_preprocessed.csv")))
+# delete NAs
+adult[adult == "?"] <- NA
+adult <- na.omit(adult)
+
+adult$workclass <- as.factor(adult$workclass)
+adult$education <- as.factor(adult$education)
+adult$marital_status <- as.factor(adult$marital_status)
+adult$relationship <- as.factor(adult$relationship)
+adult$race <- as.factor(adult$race)
+adult$sex <- as.factor(adult$sex)
+adult$native_country <- as.factor(adult$native_country)
+adult$income <- as.factor(adult$income)
+```
+
+## Synthetic Data
+
+1. Prepare Data: Split your data into features and target. Normalize the features to ensure better performance of the neural network. <br>
+2. Define and Train the MLP Model: Define the architecture of the MLP, compile the model, and train it on your data. <br>
+3. Generate Synthetic Data: Sample from the feature space, use the trained model to predict the target variable for these samples, and combine the predictions with the sampled features to create synthetic data.
+
+```{r}
+# Function to convert dataframe to numeric matrix
+convert_to_numeric_matrix <- function(df) {
+  df[] <- lapply(df, function(col) {
+    if (is.factor(col)) {
+      return(as.numeric(col))
+    } else {
+      return(col)
+    }
+  })
+  return(as.matrix(df))
+}
+
+# Function to restore factors from numeric values
+restore_factors <- function(original_df, synthesized_df) {
+  synthesized_df[] <- lapply(seq_along(original_df), function(i) {
+    if (is.factor(original_df[[i]])) {
+      levels <- levels(original_df[[i]])
+      return(factor(synthesized_df[[i]], levels = seq_along(levels), labels = levels))
+    } else {
+      return(as.numeric(synthesized_df[[i]]))
+    }
+  })
+  
+  return(synthesized_df)
+}
+
+# Function to build and train an MLP
+build_mlp <- function(input_shape, output_units, output_activation) {
+  model <- keras_model_sequential() %>%
+    layer_dense(units = 64, activation = 'relu', input_shape = input_shape) %>%
+    layer_dense(units = 64, activation = 'relu') %>%
+    layer_dense(units = output_units, activation = output_activation)
+  
+  model %>% compile(
+    loss = ifelse(output_activation == 'linear', 'mse', 'sparse_categorical_crossentropy'),
+    optimizer = optimizer_adam(),
+    metrics = 'accuracy'
+  )
+  
+  return(model)
+}
+
+# Function to synthesize all variables in the dataframe sequentially using MLP
+synthesize_data_mlp <- function(data, epochs = 50, batch_size = 32) {
+  data_synth <- data
+  
+  for (j in seq_along(colnames(data))) {
+    var_j <- colnames(data)[j]
+    var_indices <- match(colnames(data)[1:(j-1)], colnames(data_synth), nomatch = 0)
+    predictors <- c(colnames(data)[-j], colnames(data_synth)[var_indices])
+    
+    # Prepare data for MLP by converting all predictors to numeric
+    X <- convert_to_numeric_matrix(data_synth[, predictors, drop = FALSE])
+    y <- data_synth[[var_j]]
+    
+    # Determine the output units and activation function
+    y_numeric <- as.numeric(y)  # Convert y to numeric
+    
+    if (is.factor(y)) {
+      output_units <- length(levels(y))
+      output_activation <- 'softmax'
+      y_numeric <- y_numeric - 1  # MLP expects class labels starting from 0 for softmax
+    } else {
+      output_units <- 1
+      output_activation <- 'linear'
+    }
+    
+    # Build and train the MLP model
+    input_shape <- ncol(X)
+    model <- build_mlp(input_shape, output_units, output_activation)
+    
+    model %>% fit(
+      x = X,
+      y = y_numeric,
+      epochs = epochs,
+      batch_size = batch_size,
+      verbose = 0
+    )
+    
+    # Predict and synthesize Y(j)
+    predictions <- model %>% predict(X)
+    if (is.factor(y)) {
+      data_synth[[var_j]] <- factor(apply(predictions, 1, which.max) - 1, levels = 0:(output_units-1), labels = levels(y))
+    } else {
+      data_synth[[var_j]] <- predictions[, 1]
+    }
+  }
+  
+  # Restore factors and numeric types in synthesized data
+  data_synth <- restore_factors(data, data_synth)
+  
+  return(data_synth)
+}
+```
+
+## Apply
+
+### CPS
+
+```{r}
+# Generate synthetic data for all target variables
+synthetic_cpspop <- synthesize_data_mlp(cpspop)
+
+# View the synthetic dataset
+head(synthetic_cpspop)
+```
+
+### Adult
+
+```{r}
+# Generate synthetic data for all target variables
+synthetic_adult <- synthesize_data_mlp(adult)
+
+# View the synthetic dataset
+head(synthetic_adult)
+```
+

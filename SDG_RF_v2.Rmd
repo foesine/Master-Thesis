@@ -1,0 +1,122 @@
+---
+title: An R Markdown document converted from "/Users/emmafoessing/Documents/Master/MA/Code/Master-Thesis/SDG_RF_v2.ipynb"
+output: html_document
+---
+
+# Synthetic Data Generator with a Random Forest Model
+
+## Libraries
+
+```{r}
+list_of_packages <- c ("synthpop", "insight", "party", "haven", "dplyr", "rpart", "rpart.plot", "randomForest", "pROC", "caret", "pracma", "here", "Hmisc", "purrr", "randomForest", "caret", "ranger")
+
+install_if_missing <- function(p){
+  if(!requireNamespace(p, quietly = TRUE)){
+    install.packages(p)
+  }
+  library(p, character.only=TRUE)
+}
+
+
+lapply(list_of_packages, install_if_missing)
+```
+
+## Data
+
+```{r}
+load(file = (paste0(here(), "/cpspop.RData")))
+adult <- read.csv(file = (paste0(here(),"/adult_preprocessed.csv")))
+# delete NAs
+adult[adult == "?"] <- NA
+adult <- na.omit(adult)
+
+adult$workclass <- as.factor(adult$workclass)
+adult$education <- as.factor(adult$education)
+adult$marital_status <- as.factor(adult$marital_status)
+adult$relationship <- as.factor(adult$relationship)
+adult$race <- as.factor(adult$race)
+adult$sex <- as.factor(adult$sex)
+adult$native_country <- as.factor(adult$native_country)
+adult$income <- as.factor(adult$income)
+```
+
+## Synthetic Data
+
+```{r}
+# Function to convert dataframe columns to appropriate types (factors or numeric)
+prepare_data <- function(df) {
+  df[] <- lapply(df, function(col) {
+    if (is.logical(col)) {
+      return(as.factor(col))  # Convert logicals to factors
+    } else if (is.character(col)) {
+      return(as.factor(col))  # Convert characters to factors
+    } else {
+      return(col)  # Keep numeric and factor columns as they are
+    }
+  })
+  return(df)
+}
+
+# Function to sequentially synthesize data using Random Forests with ranger
+synthesize_data_rf <- function(data, n_trees = 500) {
+  # Prepare data by converting columns to the correct types
+  data <- prepare_data(data)
+  
+  # Initialize synthetic data frame
+  syn_data <- data.frame(matrix(ncol = ncol(data), nrow = nrow(data)))
+  colnames(syn_data) <- colnames(data)
+  
+  # Synthesize each variable sequentially
+  for (var in colnames(data)) {
+    # Identify predictors (all columns except the one being synthesized and those with any NAs)
+    predictors <- colnames(syn_data)[!sapply(syn_data, anyNA) & colnames(syn_data) != var]
+    
+    # If there are no predictors (first variable), randomly sample from the original data
+    if (length(predictors) == 0) {
+      syn_data[[var]] <- sample(data[[var]], nrow(data), replace = TRUE)
+    } else {
+      # Prepare data for ranger
+      train_data <- syn_data[, predictors, drop = FALSE]
+      train_data[[var]] <- data[[var]]
+      
+      # Fit Random Forest using ranger
+      model <- ranger(
+        formula = as.formula(paste(var, "~ .")),
+        data = train_data,
+        num.trees = n_trees,
+        probability = is.factor(data[[var]])  # Use probability estimation for factors
+      )
+      
+      # Predict the values for the synthetic data
+      if (is.factor(data[[var]])) {
+        predictions <- predict(model, data = syn_data[, predictors, drop = FALSE])$predictions
+        syn_data[[var]] <- factor(apply(predictions, 1, which.max), levels = 1:nlevels(data[[var]]), labels = levels(data[[var]]))
+      } else {
+        predictions <- predict(model, data = syn_data[, predictors, drop = FALSE])$predictions
+        syn_data[[var]] <- predictions
+      }
+    }
+  }
+  
+  return(syn_data)
+}
+```
+
+## Apply
+
+### CPS
+
+```{r}
+cps_syndata <- synthesize_data_rf(cpspop)
+```
+
+```{r}
+head(cps_syndata)
+```
+
+### Adult
+
+```{r}
+adult_syndata <- synthesize_data_rf(adult)
+```
+

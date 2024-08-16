@@ -1,0 +1,139 @@
+---
+title: An R Markdown document converted from "/Users/emmafoessing/Documents/Master/MA/Code/Master-Thesis/SDG_BN.ipynb"
+output: html_document
+---
+
+# Synthetic Data Generator with a Bayesian Network Model
+
+## Libraries
+
+```{r}
+list_of_packages <- c ("synthpop", "insight", "party", "haven", "dplyr", "rpart", "rpart.plot", "randomForest", "pROC", "caret", "pracma", "here", "Hmisc", "purrr", "randomForest", "caret", "ranger",  "pracma", "bnlearn", "arulesCBA")
+
+install_if_missing <- function(p){
+  if(!requireNamespace(p, quietly = TRUE)){
+    install.packages(p)
+  }
+  library(p, character.only=TRUE)
+}
+
+
+lapply(list_of_packages, install_if_missing)
+```
+
+## Data
+
+```{r}
+load(file = (paste0(here(), "/cpspop.RData")))
+adult <- read.csv(file = (paste0(here(),"/adult_preprocessed.csv")))
+# delete NAs
+adult[adult == "?"] <- NA
+adult <- na.omit(adult)
+
+adult$workclass <- as.factor(adult$workclass)
+adult$education <- as.factor(adult$education)
+adult$marital_status <- as.factor(adult$marital_status)
+adult$relationship <- as.factor(adult$relationship)
+adult$race <- as.factor(adult$race)
+adult$sex <- as.factor(adult$sex)
+adult$native_country <- as.factor(adult$native_country)
+adult$income <- as.factor(adult$income)
+```
+
+## Synthetic Data
+
+```{r}
+discretize_df = function(df, breaks = 5) {
+  for (var in colnames(df)) {
+    # Check if the variable is not a factor
+    if (!is.factor(df[[var]])) {
+
+      # Count the frequency of each unique value
+      freq_table <- table(df[[var]])
+
+      # Calculate the proportion of zeros, ensuring NA is handled
+      zero_proportion <- ifelse(!is.na(freq_table[as.character(0)]), 
+                                freq_table[as.character(0)] / sum(freq_table), 
+                                0)
+
+      # Determine the number of breaks based on zero proportion
+      if (zero_proportion > 4/5) {
+        new_breaks = 1
+      } else if (zero_proportion > 1/4) {
+        new_breaks = breaks - 2
+      } else if (zero_proportion > 1/5) {
+        new_breaks = breaks - 1
+      } else {
+        new_breaks = breaks
+      }
+      
+      # Separate zeros and non-zeros
+      zero_portion = (df[[var]] == 0)
+      non_zero_values = df[[var]][!zero_portion]
+
+      # Discretize non-zero values
+      if (length(non_zero_values) > 0) {
+        # Calculate breaks for non-zero values
+        range_values = range(non_zero_values, na.rm = TRUE)
+        breaks_values = seq(range_values[1], range_values[2], length.out = new_breaks + 1)
+        
+        # Ensure correct number of labels are created
+        labels = sapply(1:(length(breaks_values)-1), function(i) 
+                        paste("(", breaks_values[i], "-", breaks_values[i+1], "]", sep=""))
+
+        # Use cut to apply these breaks and labels
+        discretized_non_zeros = cut(non_zero_values, breaks = breaks_values, labels = labels, include.lowest = TRUE)
+        # Combine zero and discretized non-zeros into the original dataframe
+        df[[var]] <- factor(ifelse(zero_portion, "0", as.character(discretized_non_zeros)))
+      } else {
+        # If all values are zero or the number of breaks is zero or negative
+        df[[var]] <- factor("0")
+      }
+    }
+  }
+  return(df)
+}
+```
+
+sequential synthesis does not make a difference since the learned DAG already has all conditional probabilaties modeled
+
+```{r}
+synthesize_data_bn <- function(data) {
+  # Discretize data before creating synthetic data
+  data <- discretize_df(data)
+  
+  # Learn structure using Hill-Climbing
+  bn <- hc(data)
+  
+  # Learn parameters using Maximum Likelihood Estimation
+  bn <- bn.fit(bn, data)
+  
+  # Generate Synthetic Data
+  syn_data <- rbn(bn, n = nrow(data))  # Generate same number of observations as in the original data
+  
+  return(syn_data)
+}
+```
+
+## Apply
+
+### CPS
+
+```{r}
+# Generate synthetic data for all target variables
+synthetic_cpspop <- synthesize_data_bn(cpspop)
+
+# View the synthetic dataset
+head(synthetic_cpspop)
+```
+
+### Adult
+
+```{r}
+# Generate synthetic data for all target variables
+synthetic_adult <- synthesize_data_bn(adult)
+
+# View the synthetic dataset
+head(synthetic_adult)
+```
+

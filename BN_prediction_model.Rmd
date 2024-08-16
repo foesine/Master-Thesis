@@ -43,6 +43,7 @@ adult$race <- as.factor(adult$race)
 adult$sex <- as.factor(adult$sex)
 adult$native_country <- as.factor(adult$native_country)
 adult$income <- as.factor(adult$income)
+adult$occupation <- as.factor(adult$occupation)
 
 adult_with_cont <- adult
 cps_with_cont <- cpspop

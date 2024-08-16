@@ -1,0 +1,125 @@
+---
+title: An R Markdown document converted from "/Users/emmafoessing/Documents/Master/MA/Code/Master-Thesis/SDG_RF.ipynb"
+output: html_document
+---
+
+# Synthetic Data Generator with a Random Forest Model
+
+## Libraries
+
+```{r}
+list_of_packages <- c ("synthpop", "insight", "party", "haven", "dplyr", "rpart", "rpart.plot", "randomForest", "pROC", "caret", "pracma", "here", "Hmisc", "purrr", "randomForest", "caret", "ranger")
+
+install_if_missing <- function(p){
+  if(!requireNamespace(p, quietly = TRUE)){
+    install.packages(p)
+  }
+  library(p, character.only=TRUE)
+}
+
+
+lapply(list_of_packages, install_if_missing)
+```
+
+## Data
+
+```{r}
+load(file = (paste0(here(), "/cpspop.RData")))
+adult <- read.csv(file = (paste0(here(),"/adult_preprocessed.csv")))
+# delete NAs
+adult[adult == "?"] <- NA
+adult <- na.omit(adult)
+
+adult$workclass <- as.factor(adult$workclass)
+adult$education <- as.factor(adult$education)
+adult$marital_status <- as.factor(adult$marital_status)
+adult$relationship <- as.factor(adult$relationship)
+adult$race <- as.factor(adult$race)
+adult$sex <- as.factor(adult$sex)
+adult$native_country <- as.factor(adult$native_country)
+adult$income <- as.factor(adult$income)
+```
+
+## Synthetic Data
+
+```{r}
+generate_synthetic_data <- function(data, target_var, num_trees = 500) {
+  # Ensure data is a data frame or tibble
+  data <- as.data.frame(data)
+  
+  predictors <- data %>% select(-all_of(target_var))
+  target <- data[[target_var]]
+  
+  # Sample the data for training to reduce memory usage
+  sample_size <- nrow(data)
+  sampled_indices <- sample(nrow(data), sample_size)
+  sampled_predictors <- predictors[sampled_indices, ]
+  sampled_target <- target[sampled_indices]
+  
+  # Train the Random Forest model
+  rf_model <- ranger(as.factor(sampled_target) ~ ., data = sampled_predictors, num.trees = num_trees, 
+                     write.forest = TRUE, keep.inbag = TRUE, probability = TRUE)
+  
+  # Generate synthetic values
+  synthetic_values <- sapply(1:nrow(data), function(i) {
+    # Predict the terminal nodes for the current row
+    terminal_node <- predict(rf_model, data = predictors[i, , drop = FALSE], type = "terminalNodes")$predictions[1]
+    
+    # Get indices of training samples that ended up in the same terminal node
+    inbag_counts <- rf_model$inbag.counts[[1]]
+    sampled_indices <- which(inbag_counts[, terminal_node] > 0)
+    
+    if (length(sampled_indices) == 0) {
+      return(NA)  # If no samples, return NA
+    }
+    
+    sampled_values <- table(sampled_target[sampled_indices])
+    sampled_values <- sampled_values / sum(sampled_values)
+    
+    sample(names(sampled_values), 1, prob = sampled_values)
+  })
+  
+  # Create the synthetic data
+  synthetic_data <- data
+  synthetic_data[[target_var]] <- synthetic_values
+  return(synthetic_data)
+}
+
+generate_synthetic_data_all <- function(data, target_vars, num_trees = 500) {
+  synthetic_data <- data
+  for (target_var in target_vars) {
+    synthetic_data <- generate_synthetic_data(synthetic_data, target_var, num_trees)
+    cat("Variable", target_var, "done\n")
+  }
+  return(synthetic_data)
+}
+```
+
+## Apply
+
+### CPS
+
+```{r}
+# Define target variables
+target_vars <- colnames(cpspop)
+
+# Generate synthetic data for all target variables
+synthetic_cpspop <- generate_synthetic_data_all(cpspop, target_vars, num_trees = 500)
+
+# View the synthetic dataset
+head(synthetic_cpspop)
+```
+
+### Adult
+
+```{r}
+# Define target variables
+target_vars <- colnames(adult)
+
+# Generate synthetic data for all target variables
+synthetic_adult <- generate_synthetic_data_all(adult, target_vars, num_trees = 500)
+
+# View the synthetic dataset
+head(synthetic_adult)
+```
+
